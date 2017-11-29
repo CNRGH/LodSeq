@@ -1,0 +1,11 @@
+.snakemake/
+logs/
+old/
+test/
+data/inputs/genetic_map_HapMapII_GRCh37/
+cluster.json
+*.log
+*.e
+*.o
+*.txt
+Thumbs.db

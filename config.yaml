@@ -1,0 +1,12 @@
+vcf: data/inputs/chr7_mdf.vcf.gz
+tfam: data/inputs/pedigree_mdf.tfam
+dom_model: data/inputs/parametric_dominant.model
+rec_model: data/inputs/parametric_recessive.model
+genetic_maps: data/inputs/genetic_map_HapMapII_GRCh37/
+out_dir: test/
+out_log: test/test.log
+out_prefix: CEPH1463
+lod_threshold: '1.3'
+threads: '1'
+chromosomes: 
+  - 7

@@ -1,0 +1,13 @@
+name: lodseq 
+
+channels:
+- defaults
+- conda-forge
+- bioconda
+
+dependencies:
+- plink
+- vcftools>=0.1.12
+- merlin
+- coreutils
+- gawk
