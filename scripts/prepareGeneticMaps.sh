@@ -196,6 +196,11 @@ EOF
 
 
   #main process
+  #because there is no genetic map for the Y chromosome, create empty files
+  if [[ "${CHROMOSOME}" == "Y" ]]; then 
+    touch ${OUTDIR}/genetic_map_GRCh37_chr${CHROMOSOME}_wo_head.txt
+  fi
+
   #because there is no genetic map for the Y chromosome
   if [[ "${CHROMOSOME}" != "Y" ]]; then 
 

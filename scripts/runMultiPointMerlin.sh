@@ -299,6 +299,16 @@ EOF
   OUTDOMSIGNIF="${OUTDIR}/${OUTPREFIX}${CHROMOSOME}_dominant_LODsignif.txt"
   OUTRECSIGNIF="${OUTDIR}/${OUTPREFIX}${CHROMOSOME}_recessive_LODsignif.txt"
 
+  #create empty files if chromosome 'Y'
+  if [[ "${CHROMOSOME}" == "Y" ]]; then
+    touch ${OUTDOM} 
+    touch ${OUTREC}
+    touch ${OUTDIR}/${OUTPREFIX}${CHROMOSOME}_dominant.woheader.txt
+    touch ${OUTDIR}/${OUTPREFIX}${CHROMOSOME}_recessive.woheader.txt
+    touch ${OUTDOMSIGNIF}
+    touch ${OUTRECSIGNIF}
+  fi
+
   ##if chromosome is not 'Y' run multipoint merlin analysis
   #because there is no genetic map for the Y chromosome
   #empty files .dat .ped and .map were only created for the Y chromosome.
