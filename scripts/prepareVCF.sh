@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Copyright 2017 CEA CNRGH (Centre National de Recherche en Genomique Humaine) #

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Copyright 2017 CEA CNRGH (Centre National de Recherche en Genomique Humaine) #
@@ -212,8 +212,7 @@ not exist. Program exit" >&2
       fi
       ## SORT by position (bp) - to get (lexically not numerically) sorted 
       ## genetic maps as inputs of the future 'join' commands
-      sed -e '1d' "${GENMAPS}/genetic_map_GRCh37_chr${CHROMOSOME}.txt" \
-        | awk '{ $2=sprintf("%015d", $2); print $2,$4}' \
+      awk 'FNR>1 { $2=sprintf("%015d", $2); print $2,$4}' "${GENMAPS}/genetic_map_GRCh37_chr${CHROMOSOME}.txt" \
         | sort -k 1 \
         > "${OUTDIR}/genetic_map_GRCh37_chr${CHROMOSOME}_wo_head.txt"
       if [[ $? -ne 0 ]] \
@@ -242,24 +241,21 @@ exist or is not a file. Program exit" >&2
         exit 1 
       fi
 
-      sed -e '1d' "${GENMAPS}/genetic_map_GRCh37_chrX_par1.txt" \
-        | awk '{print $2,$4}' \
+      awk 'FNR>1 {print $2,$4}' "${GENMAPS}/genetic_map_GRCh37_chrX_par1.txt" \
         > "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt" \
         || {
           echo "[ERROR] An error occurred when formating the genetic map file \
 '${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt'." >&2 
           exit 1
       }
-      sed -e '1d' "${GENMAPS}/genetic_map_GRCh37_chrX.txt" \
-        | awk '{print $2,$4}' \
+      awk 'FNR>1 {print $2,$4}' "${GENMAPS}/genetic_map_GRCh37_chrX.txt" \
         >> "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt" \
         || {
           echo "[ERROR] An error occurred when formating the genetic map file \
 '${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt'." >&2 
           exit 1
       }
-      sed -e '1d' "${GENMAPS}/genetic_map_GRCh37_chrX_par2.txt" \
-        | awk '{print $2,$4}' \
+      awk 'FNR>1 {print $2,$4}' "${GENMAPS}/genetic_map_GRCh37_chrX_par2.txt" \
         >> "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt"
       if [[ $? -ne 0 ]] \
         || [[ ! -f "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt" ]] \
