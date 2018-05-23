@@ -78,7 +78,7 @@ END_WITH_ERRORS=0
 # display_usage
 # This function displays the usage of this program.
 # No parameters
-function display_usage {
+display_usage() {
   cat - <<EOF
   USAGE :
     ${NAME} [options] -D <in_dom_model> -R <in_rec_model> -m <in_map> -d <in_dat> \
@@ -113,7 +113,7 @@ EOF
 # main
 # Runs a multipoint merlin analysis from input .map .dat .ped files.
 # Parameters : See 'getopts' part.
-function main {
+main() {
 
   local file=""
   local prefix=""

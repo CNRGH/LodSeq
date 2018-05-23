@@ -73,7 +73,7 @@ THREADS=1                         ## -t // option '--threads' of plink is ignore
 # display_usage
 # This function displays the usage of this program.
 # No parameters
-function display_usage {
+display_usage() {
   cat - <<EOF
   USAGE :
     ${NAME} [options] -m <in_map> -p <in_ped> -c <string> -o <out_dir>
@@ -103,7 +103,7 @@ EOF
 # main
 # Performs a genetic linkage analysis (lod-scores) between related individuals.
 # Parameters : See 'getopts' part.
-function main {
+main() {
 
   local nb_proc=1
   local plink_tmp_log=""

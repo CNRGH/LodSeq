@@ -74,7 +74,7 @@ THREADS=1                         ## -t // option '--threads' of plink is ignore
 # display_usage
 # This function displays the usage of this program.
 # No parameters
-function display_usage {
+display_usage() {
   cat - <<EOF
   USAGE :
     ${NAME} [options] -m <in_map> -p <in_ped> -c <string> -g <in_genetic_maps_dir> \
@@ -109,7 +109,7 @@ EOF
 # Formats .ped .dat and .map files for a multipoint merlin analysis from input 
 #   .map .ped files.
 # Parameters : See 'getopts' part.
-function main {
+main() {
 
   local nb_proc=1
   local plink_tmp_log=""

@@ -73,7 +73,7 @@ OUTPREFIX='N.O.S.T.R.I.N.G'        ## -s
 # display_usage
 # This function displays the usage of this program.
 # No parameters
-function display_usage {
+display_usage() {
   cat - <<EOF
   USAGE :
     ${NAME} [options] -i <in_vcf> -p <in_tfam> -o <out_dir>
@@ -100,7 +100,7 @@ EOF
 # main
 # Outputs .ped and .map files from input .vcf and .tfam files.
 # Parameters : See 'getopts' part.
-function main {
+main() {
 
   local nb_proc=1 
   local vcftools_tmp_log=""

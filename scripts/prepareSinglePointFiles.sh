@@ -71,7 +71,7 @@ OUTPREFIX='N.O.S.T.R.I.N.G'       ## -s
 # display_usage
 # This function displays the usage of this program.
 # No parameters
-function display_usage {
+display_usage() {
   cat - <<EOF
   USAGE :
     ${NAME} [options] -m <in_map> -c <string> -o <out_dir> 
@@ -99,7 +99,7 @@ EOF
 # main
 # Formats .dat and .map files for a singlepoint merlin analysis from an input .map file.
 # Parameters : See 'getopts' part.
-function main {
+main() {
 
   # check whether user had supplied -h or --help . If yes display usage
   if [[ "$#" -eq 0 ]]; then

@@ -70,7 +70,7 @@ OUTDIR='N.O.D.I.R'                 ## -o
 # display_usage
 # This function displays the usage of this program.
 # No parameters
-function display_usage {
+display_usage() {
   cat - <<EOF
   USAGE :
     ${NAME} [options] -g <in_genetic_maps_dir> -o <out_dir> -c <string>
@@ -96,7 +96,7 @@ EOF
 # main
 # Removes header line from input genetic map files.
 # Parameters : See 'getopts' part.
-function main {
+main() {
 
   # check whether user had supplied -h or --help . If yes display usage
   if [[ "$#" -eq 0 ]]; then
