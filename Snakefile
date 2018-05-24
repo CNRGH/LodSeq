@@ -40,6 +40,7 @@
 ################################################################################
 
 import subprocess
+import re
 
 
 shell.executable("/bin/bash")
@@ -57,9 +58,18 @@ def getOptionalParam(cfg, key, defaultValue=None):
 
 #global variables - software versions
 #====================================
-PLINK_VERSION = subprocess.check_output("plink --version", shell=True)
-VCFTOOLS_VERSION = subprocess.check_output("vcftools | grep VCFtools", shell=True)
-MERLIN_VERSION = subprocess.check_output("merlin | grep MERLIN", shell=True)
+PLINK_OUTPUT = subprocess.check_output(["plink", "--version"]).decode('utf-8')
+PLINK_VERSION = re.search(r'PLINK v([0-9]\.[0-9]{1,2}[a-zA-Z]*)', PLINK_OUTPUT).group(1)
+
+VCFTOOLS_OUTPUT = subprocess.check_output(["vcftools"]).decode('utf-8')
+VCFTOOLS_VERSION = re.search(r'VCFtools \(v?([0-9]\.[0-9]\.[0-9]{1,2})\)', VCFTOOLS_OUTPUT).group(1)
+
+MERLIN_VERSION = ''
+try:
+   subprocess.check_output(["merlin"])
+except subprocess.CalledProcessError as e:
+   MERLIN_OUTPUT = e.output.decode('utf-8') 
+   MERLIN_VERSION = re.search(r'MERLIN ([0-9]\.[0-9]\.[0-9]{1,2})', MERLIN_OUTPUT).group(1)
 
 
 #global variables - inputs
@@ -96,10 +106,10 @@ OUTMULTI = expand('{out_dir}/runMultiPointMerlin/{ch}/runMultiPointMerlin.out',
                 ch=chromosomes )
 
 #output files of rule mergeResults
-OUTMERGEDOMSGL = config["out_dir"] + '/mergeResults/results_singlepoint_merged_dominant.txt'
-OUTMERGERECSGL = config["out_dir"] + '/mergeResults/results_singlepoint_merged_recessive.txt'
-OUTMERGEDOMMULTI = config["out_dir"] + '/mergeResults/results_multipoint_merged_dominant.txt'
-OUTMERGERECMULTI = config["out_dir"] + '/mergeResults/results_multipoint_merged_recessive.txt'
+OUTMERGEDOMSGL = '{out_dir}/mergeResults/results_singlepoint_merged_dominant.txt'.format(out_dir=config["out_dir"])
+OUTMERGERECSGL = '{out_dir}/mergeResults/results_singlepoint_merged_recessive.txt'.format(out_dir=config["out_dir"])
+OUTMERGEDOMMULTI = '{out_dir}/mergeResults/results_multipoint_merged_dominant.txt'.format(out_dir=config["out_dir"])
+OUTMERGERECMULTI = '{out_dir}/mergeResults/results_multipoint_merged_recessive.txt'.format(out_dir=config["out_dir"])
 
 
 #localrules
