@@ -78,7 +78,7 @@ display_usage() {
       -c <string>       input chromosome
       -o <inDirectory>  directory where are stored output files
       -h                print help
-  
+
   DESCRIPTION :
     ${NAME} removes header from genetic map file(s).
 
@@ -120,44 +120,44 @@ main() {
   ## catch option values
   while getopts :g:o:c: option
   do
-    if [[ -z "${OPTARG}" ]]; then 
-      echo "[ERROR] Empty argument for option -${option}" >&2 
-      exit 1 
+    if [[ -z "${OPTARG}" ]]; then
+      echo "[ERROR] Empty argument for option -${option}" >&2
+      exit 1
     fi
 
     case "${option}" in
       g)
         GENMAPS="${OPTARG}"
-        if [[ ! -d "${GENMAPS}" ]]; then 
+        if [[ ! -d "${GENMAPS}" ]]; then
           echo "[ERROR] Input directory of genetic maps '${GENMAPS}' does not \
-exist (option -g)." >&2 
-          exit 1  
+exist (option -g)." >&2
+          exit 1
         fi
         ;; # -g <inDirectory>
       o)
         OUTDIR="${OPTARG}"
-        if [[ ! -d "${OUTDIR}" ]]; then 
+        if [[ ! -d "${OUTDIR}" ]]; then
           echo "[ERROR] Output directory '${OUTDIR}' does not exist \
-(option -o). Please create it." >&2 
-          exit 1  
+(option -o). Please create it." >&2
+          exit 1
         fi
         ;; # -o <inDirectory>
       c)
         CHROMOSOME="${OPTARG}"
         if [[ "${CHROMOSOME}" =~ ^[0-9]+$ ]]; then
-          if [[ "${CHROMOSOME}" -lt 1 ]] || [[ "${CHROMOSOME}" -gt 22 ]]; then 
-            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2 
-            exit 1  
+          if [[ "${CHROMOSOME}" -lt 1 ]] || [[ "${CHROMOSOME}" -gt 22 ]]; then
+            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2
+            exit 1
           fi
         else
-          if [[ "${CHROMOSOME}" != "X" ]] && [[ "${CHROMOSOME}" != "Y" ]]; then 
-            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2 
-            exit 1  
+          if [[ "${CHROMOSOME}" != "X" ]] && [[ "${CHROMOSOME}" != "Y" ]]; then
+            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2
+            exit 1
           fi
         fi
         ;; # -c <string>
       :)
-        echo "[ERROR] option ${OPTARG} : missing argument" >&2 
+        echo "[ERROR] option ${OPTARG} : missing argument" >&2
         exit 1
         ;;
       \?)
@@ -170,14 +170,14 @@ exist (option -g)." >&2
   readonly GENMAPS OUTDIR CHROMOSOME
 
   ### check mandatory parameters
-  if [[ "${GENMAPS}" = 'N.O.D.I.R' ]]; then 
+  if [[ "${GENMAPS}" = 'N.O.D.I.R' ]]; then
     echo '[ERROR] Directory of genetic maps was not supplied (mandatory option \
--g)' >&2 
-    exit 1  
+-g)' >&2
+    exit 1
   fi
-  if [[ "${OUTDIR}" = 'N.O.D.I.R' ]]; then 
-    echo '[ERROR] Output directory was not supplied (mandatory option -o)' >&2 
-    exit 1  
+  if [[ "${OUTDIR}" = 'N.O.D.I.R' ]]; then
+    echo '[ERROR] Output directory was not supplied (mandatory option -o)' >&2
+    exit 1
   fi
   if [[ "${CHROMOSOME}" = 'N.O.C.H.R.O.M' ]]; then
     echo '[ERROR] Chromosome was not supplied (mandatory option -c)' >&2
@@ -187,7 +187,7 @@ exist (option -g)." >&2
 
   ### print used parameters
   cat - <<EOF
-    ${NAME} 
+    ${NAME}
     Parameters as interpreted:
       -g ${GENMAPS}
       -c ${CHROMOSOME}
@@ -197,94 +197,94 @@ EOF
 
   #main process
   #because there is no genetic map for the Y chromosome, create empty files
-  if [[ "${CHROMOSOME}" == "Y" ]]; then 
+  if [[ "${CHROMOSOME}" == "Y" ]]; then
     touch ${OUTDIR}/genetic_map_GRCh37_chr${CHROMOSOME}_wo_head.txt
   fi
 
   #because there is no genetic map for the Y chromosome
-  if [[ "${CHROMOSOME}" != "Y" ]]; then 
+  if [[ "${CHROMOSOME}" != "Y" ]]; then
 
     if [[ "${CHROMOSOME}" != "X" ]]; then
-      if [[ ! -f "${GENMAPS}/genetic_map_GRCh37_chr${CHROMOSOME}.txt" ]]; then 
+      if [[ ! -f "${GENMAPS}/genetic_map_GRCh37_chr${CHROMOSOME}.txt" ]]; then
           echo "[ERROR] File '${GENMAPS}/genetic_map_GRCh37_chr${CHROMOSOME}.txt' does \
-not exist. Program exit" >&2 
-          exit 1 
+not exist. Program exit" >&2
+          exit 1
       fi
-      ## SORT by position (bp) - to get (lexically not numerically) sorted 
+      ## SORT by position (bp) - to get (lexically not numerically) sorted
       ## genetic maps as inputs of the future 'join' commands
       awk 'FNR>1 { $2=sprintf("%015d", $2); print $2,$4}' "${GENMAPS}/genetic_map_GRCh37_chr${CHROMOSOME}.txt" \
         | sort -k 1 \
         > "${OUTDIR}/genetic_map_GRCh37_chr${CHROMOSOME}_wo_head.txt"
       if [[ $? -ne 0 ]] \
         || [[ ! -f "${OUTDIR}/genetic_map_GRCh37_chr${CHROMOSOME}_wo_head.txt" ]] \
-        || [[ ! -s "${OUTDIR}/genetic_map_GRCh37_chr${CHROMOSOME}_wo_head.txt" ]]; then 
+        || [[ ! -s "${OUTDIR}/genetic_map_GRCh37_chr${CHROMOSOME}_wo_head.txt" ]]; then
           echo "[ERROR] An error occurred when formating the genetic map file \
-'${OUTDIR}/genetic_map_GRCh37_chr${CHROMOSOME}_wo_head.txt'. Program exit." >&2 
-          exit 1 
+'${OUTDIR}/genetic_map_GRCh37_chr${CHROMOSOME}_wo_head.txt'. Program exit." >&2
+          exit 1
       fi
 
     elif [[ "${CHROMOSOME}" == "X" ]]; then
       #there are 3 files for X
-      if [[ ! -f "${GENMAPS}/genetic_map_GRCh37_chrX_par1.txt" ]]; then 
+      if [[ ! -f "${GENMAPS}/genetic_map_GRCh37_chrX_par1.txt" ]]; then
         echo "[ERROR] File '${GENMAPS}/genetic_map_GRCh37_chrX_par1.txt' does not \
-exist or is not a file. Program exit" >&2 
-        exit 1 
+exist or is not a file. Program exit" >&2
+        exit 1
       fi
-      if [[ ! -f "${GENMAPS}/genetic_map_GRCh37_chrX.txt" ]]; then 
+      if [[ ! -f "${GENMAPS}/genetic_map_GRCh37_chrX.txt" ]]; then
         echo "[ERROR] File '${GENMAPS}/genetic_map_GRCh37_chrX.txt' does not \
-exist or is not a file. Program exit" >&2 
-        exit 1 
+exist or is not a file. Program exit" >&2
+        exit 1
       fi
-      if [[ ! -f "${GENMAPS}/genetic_map_GRCh37_chrX_par2.txt" ]]; then 
+      if [[ ! -f "${GENMAPS}/genetic_map_GRCh37_chrX_par2.txt" ]]; then
         echo "[ERROR] File '${GENMAPS}/genetic_map_GRCh37_chrX_par2.txt' does not \
-exist or is not a file. Program exit" >&2 
-        exit 1 
+exist or is not a file. Program exit" >&2
+        exit 1
       fi
 
       awk 'FNR>1 {print $2,$4}' "${GENMAPS}/genetic_map_GRCh37_chrX_par1.txt" \
         > "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt" \
         || {
           echo "[ERROR] An error occurred when formating the genetic map file \
-'${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt'." >&2 
+'${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt'." >&2
           exit 1
       }
       awk 'FNR>1 {print $2,$4}' "${GENMAPS}/genetic_map_GRCh37_chrX.txt" \
         >> "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt" \
         || {
           echo "[ERROR] An error occurred when formating the genetic map file \
-'${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt'." >&2 
+'${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt'." >&2
           exit 1
       }
       awk 'FNR>1 {print $2,$4}' "${GENMAPS}/genetic_map_GRCh37_chrX_par2.txt" \
         >> "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt"
       if [[ $? -ne 0 ]] \
         || [[ ! -f "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt" ]] \
-        || [[ ! -s "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt" ]]; then 
+        || [[ ! -s "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt" ]]; then
           echo "[ERROR] An error occurred when formating the genetic map file \
-'${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt' or it is not a file." >&2 
-          exit 1 
+'${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt' or it is not a file." >&2
+          exit 1
       fi
 
-      ## SORT by position (bp) - to get (lexically not numerically) sorted 
+      ## SORT by position (bp) - to get (lexically not numerically) sorted
       ## genetic maps as inputs of the future 'join' commands
-      awk '{ 
-        $1=sprintf("%015d", $1); 
+      awk '{
+        $1=sprintf("%015d", $1);
         print $0
       }' "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt" \
         | sort -k 1 \
         > "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt.tmp" \
         || {
           echo "[ERROR] An error occurred when formating the genetic map file \
-'${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt.tmp' or it is not a file." >&2 
-          exit 1 
+'${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt.tmp' or it is not a file." >&2
+          exit 1
       }
       mv "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt.tmp" "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt"
       if [[ $? -ne 0 ]] \
         || [[ ! -f "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt" ]] \
-        || [[ ! -s "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt" ]]; then 
+        || [[ ! -s "${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt" ]]; then
           echo "[ERROR] An error occurred when formating the genetic map file \
-'${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt' or it is not a file." >&2 
-          exit 1 
+'${OUTDIR}/genetic_map_GRCh37_chrX_wo_head.txt' or it is not a file." >&2
+          exit 1
       fi
     fi
   fi

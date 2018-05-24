@@ -20,7 +20,7 @@
 # modify and redistribute granted by the license, users are provided only      #
 # with a limited warranty  and the software's author,  the holder of the       #
 # economic rights,  and the successive licensors  have only  limited           #
-# liability.                                                                   #  
+# liability.                                                                   #
 #                                                                              #
 # In this respect, the user's attention is drawn to the risks associated       #
 # with loading,  using,  modifying and/or developing or reproducing the        #
@@ -83,7 +83,7 @@ display_usage() {
       -s <string>       prefix of output files
       -t <int>          number of threads used by plink steps (default : 1)
       -h                print help
-  
+
   DESCRIPTION :
     ${NAME} outputs .ped and .map files from input .vcf and .tfam files.
 
@@ -102,7 +102,7 @@ EOF
 # Parameters : See 'getopts' part.
 main() {
 
-  local nb_proc=1 
+  local nb_proc=1
   local vcftools_tmp_log=""
   local plink_tmp_log=""
   local rc=0
@@ -131,34 +131,34 @@ main() {
  ## catch option values
   while getopts :i:p:o:s:t: option
   do
-    if [[ -z "${OPTARG}" ]]; then 
-      echo "[ERROR] Empty argument for option -${option}" >&2 
-      exit 1 
+    if [[ -z "${OPTARG}" ]]; then
+      echo "[ERROR] Empty argument for option -${option}" >&2
+      exit 1
     fi
 
     case "${option}" in
       i)
         VCF="${OPTARG}"
-        if [[ ! -f "${VCF}" ]]; then 
+        if [[ ! -f "${VCF}" ]]; then
           echo "[ERROR] Input VCF file '${VCF}' does not exist or is not a file \
-(option -i)." >&2 
-          exit 1  
+(option -i)." >&2
+          exit 1
         fi
         ;; # -i <inFile>
       p)
         TFAM="${OPTARG}";
-        if [[ ! -f "${TFAM}" ]]; then 
+        if [[ ! -f "${TFAM}" ]]; then
           echo "[ERROR] Input TFAM file '${TFAM}' does not exist or is not a file \
-(option -p)." >&2 
-          exit 1  
+(option -p)." >&2
+          exit 1
         fi
         ;; # -p <inFile>
       o)
         OUTDIR="${OPTARG}";
-        if [[ ! -d "${OUTDIR}" ]]; then 
+        if [[ ! -d "${OUTDIR}" ]]; then
           echo "[ERROR] Output directory '${OUTDIR}' does not exist (option -o). \
-Please create it." >&2 
-          exit 1  
+Please create it." >&2
+          exit 1
         fi
         ;; # -o <inDirectory>
       s)
@@ -167,13 +167,13 @@ Please create it." >&2
       t)
         THREADS="${OPTARG}"
         nb_proc="$(getconf _NPROCESSORS_ONLN)"  #unix and osx
-        if ! [[ "${THREADS}" =~ ^[0-9]+$ ]] || [[ "${THREADS}" -lt 1 ]]; then 
-          echo '[ERROR] the number of threads must be greater than 0 (option -t).' >&2 
-          exit 1  
+        if ! [[ "${THREADS}" =~ ^[0-9]+$ ]] || [[ "${THREADS}" -lt 1 ]]; then
+          echo '[ERROR] the number of threads must be greater than 0 (option -t).' >&2
+          exit 1
         fi
-        if [[ "${THREADS}" -gt "${nb_proc}" ]]; then 
+        if [[ "${THREADS}" -gt "${nb_proc}" ]]; then
           echo "[ERROR] too much threads requested, use ${nb_proc} thread(s) instead" >&2
-          exit 1 
+          exit 1
         fi
         ;; # -t <number of threads>
       :)
@@ -190,29 +190,29 @@ Please create it." >&2
   readonly VCF TFAM OUTDIR THREADS
 
   ### checking input directories and files
-  if [[ "${VCF}" = 'N.O.F.I.L.E' ]]; then 
-    echo '[ERROR] Input VCF file was not supplied (mandatory option -i)' >&2 
-    exit 1  
+  if [[ "${VCF}" = 'N.O.F.I.L.E' ]]; then
+    echo '[ERROR] Input VCF file was not supplied (mandatory option -i)' >&2
+    exit 1
   fi
-  if [[ "${TFAM}" = 'N.O.F.I.L.E' ]]; then 
-    echo '[ERROR] Input TFAM file was not supplied (mandatory option -p)' >&2 
-    exit 1  
+  if [[ "${TFAM}" = 'N.O.F.I.L.E' ]]; then
+    echo '[ERROR] Input TFAM file was not supplied (mandatory option -p)' >&2
+    exit 1
   fi
-  if [[ "${OUTDIR}" = 'N.O.D.I.R' ]]; then 
-    echo '[ERROR] Output directory was not supplied (mandatory option -o)' >&2 
-    exit 1  
+  if [[ "${OUTDIR}" = 'N.O.D.I.R' ]]; then
+    echo '[ERROR] Output directory was not supplied (mandatory option -o)' >&2
+    exit 1
   fi
- 
-  ### define default output file prefix 
+
+  ### define default output file prefix
   if [[ "${OUTPREFIX}" = 'N.O.S.T.R.I.N.G' ]]; then
-    OUTPREFIX="$(basename "${VCF}" '.vcf')" 
+    OUTPREFIX="$(basename "${VCF}" '.vcf')"
   fi
   readonly OUTPREFIX
 
 
   ### print used parameters
   cat - <<EOF
-  ${NAME} 
+  ${NAME}
   Parameters as interpreted:
     -i ${VCF} \n  -p ${TFAM} \n  -o ${OUTDIR} \n  -s ${OUTPREFIX} \n  -t ${THREADS}
 EOF
@@ -224,9 +224,9 @@ EOF
   echo '[INFO] chromosomes for which there are variants in the vcf file: '
   zcat "${VCF}" | \
     awk '{
-      if ( $1 !~ /^#/ && !($1 in a)){ 
-        a[$1] = $1 
-      } 
+      if ( $1 !~ /^#/ && !($1 in a)){
+        a[$1] = $1
+      }
     } END {
       for (i in a) {
         print a[i]}
@@ -238,7 +238,7 @@ EOF
 
   ##transform from (g)vcf to tped/tfam format
   vcftools_tmp_log="$(mktemp "${OUTDIR}/vcftools.XXX.log")"
-  # echo "vcftools --gzvcf ${VCF} --plink-tped --out ${OUTDIR}/${OUTPREFIX}_vcftools" 
+  # echo "vcftools --gzvcf ${VCF} --plink-tped --out ${OUTDIR}/${OUTPREFIX}_vcftools"
   vcftools --gzvcf "${VCF}" --plink-tped --out "${OUTDIR}/${OUTPREFIX}_vcftools" \
     &> "${vcftools_tmp_log}"
   ##=> generate a tfam file with values of 0
@@ -249,11 +249,11 @@ EOF
   if [[ $rc -ne 0 ]] \
     || [[ ${grep_rc} -eq 0 ]] \
     || [[ ! -f "${OUTDIR}/${OUTPREFIX}_vcftools.tped" ]] \
-    || [[ ! -s "${OUTDIR}/${OUTPREFIX}_vcftools.tped" ]]; then 
+    || [[ ! -s "${OUTDIR}/${OUTPREFIX}_vcftools.tped" ]]; then
       if [[ -f "${vcftools_tmp_log}" ]]; then rm "${vcftools_tmp_log}"; fi
       echo "[ERROR] File '${OUTDIR}/${OUTPREFIX}_vcftools.tped' was not output by \
-vcftools or is empty. See log files. Program exit" >&2 
-      exit 1 
+vcftools or is empty. See log files. Program exit" >&2
+      exit 1
   fi
   if [[ -f "${vcftools_tmp_log}" ]]; then rm "${vcftools_tmp_log}"; fi
 

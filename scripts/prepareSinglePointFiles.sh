@@ -74,13 +74,13 @@ OUTPREFIX='N.O.S.T.R.I.N.G'       ## -s
 display_usage() {
   cat - <<EOF
   USAGE :
-    ${NAME} [options] -m <in_map> -c <string> -o <out_dir> 
+    ${NAME} [options] -m <in_map> -c <string> -o <out_dir>
       -m <inFile>       input map file
       -c <string>       input chromosome
       -o <inDirectory>  directory where are stored output files
       -s <string>       prefix of output files
       -h                print help
-  
+
   DESCRIPTION :
     ${NAME} formats .dat and .map files for a singlepoint merlin analysis from an
     input .map file.
@@ -125,40 +125,40 @@ main() {
   ## catch option values
   while getopts :m:c:o:s: option
   do
-    if [[ -z "${OPTARG}" ]]; then 
-      echo "[ERROR] Empty argument for option -${option}" >&2 
-      exit 1 
+    if [[ -z "${OPTARG}" ]]; then
+      echo "[ERROR] Empty argument for option -${option}" >&2
+      exit 1
     fi
 
     case "${option}" in
       m)
         MAP="${OPTARG}"
-        if [[ ! -f "${MAP}" ]]; then 
+        if [[ ! -f "${MAP}" ]]; then
           echo "[ERROR] Input MAP file '${MAP}' does not exist or is not a file \
-(option -m)." >&2 
-          exit 1  
+(option -m)." >&2
+          exit 1
         fi
         ;; # -m <inFile>
       c)
         CHROMOSOME="${OPTARG}"
         if [[ "${CHROMOSOME}" =~ ^[0-9]+$ ]]; then
-          if [[ "${CHROMOSOME}" -lt 1 ]] || [[ "${CHROMOSOME}" -gt 22 ]]; then 
-            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2 
-            exit 1  
+          if [[ "${CHROMOSOME}" -lt 1 ]] || [[ "${CHROMOSOME}" -gt 22 ]]; then
+            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2
+            exit 1
           fi
         else
-          if [[ "${CHROMOSOME}" != "X" ]] && [[ "${CHROMOSOME}" != "Y" ]]; then 
-            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2 
-            exit 1  
+          if [[ "${CHROMOSOME}" != "X" ]] && [[ "${CHROMOSOME}" != "Y" ]]; then
+            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2
+            exit 1
           fi
         fi
         ;; # -c <string>
       o)
         OUTDIR="${OPTARG}"
-        if [[ ! -d "${OUTDIR}" ]]; then 
+        if [[ ! -d "${OUTDIR}" ]]; then
           echo "[ERROR] Output directory '${OUTDIR}' does not exist (option -o).\
- Please create it." >&2 
-          exit 1  
+ Please create it." >&2
+          exit 1
         fi
         ;; # -o <inDirectory>
       s)
@@ -170,7 +170,7 @@ main() {
         exit 1
         ;;
       \?)
-        echo "[ERROR] ${OPTARG} : invalid option" >&2 
+        echo "[ERROR] ${OPTARG} : invalid option" >&2
         exit 1
         ;;
     esac
@@ -180,29 +180,29 @@ main() {
 
 
   ### checking input directories and files
-  if [[ "${MAP}" = 'N.O.F.I.L.E' ]]; then 
-    echo '[ERROR] Input MAP file was not supplied (mandatory option -m)' >&2 
-    exit 1  
+  if [[ "${MAP}" = 'N.O.F.I.L.E' ]]; then
+    echo '[ERROR] Input MAP file was not supplied (mandatory option -m)' >&2
+    exit 1
   fi
-  if [[ "${OUTDIR}" = 'N.O.D.I.R' ]]; then 
-    echo '[ERROR] Output directory was not supplied (mandatory option -o)' >&2 
-    exit 1  
+  if [[ "${OUTDIR}" = 'N.O.D.I.R' ]]; then
+    echo '[ERROR] Output directory was not supplied (mandatory option -o)' >&2
+    exit 1
   fi
   if [[ "${CHROMOSOME}" = 'N.O.C.H.R.O.M' ]]; then
     echo '[ERROR] Chromosome was not supplied (mandatory option -c)' >&2
     exit 1
   fi
 
-  ### define default output file prefix 
-  if [[ "${OUTPREFIX}" = 'N.O.S.T.R.I.N.G' ]]; then 
-    OUTPREFIX="$(basename "${MAP}" '.map')_sgl" 
+  ### define default output file prefix
+  if [[ "${OUTPREFIX}" = 'N.O.S.T.R.I.N.G' ]]; then
+    OUTPREFIX="$(basename "${MAP}" '.map')_sgl"
   fi
   readonly OUTPREFIX
 
 
   ### print used parameters
   cat - <<EOF
-    ${NAME} 
+    ${NAME}
     Parameters as interpreted:
       -m ${MAP}
       -c ${CHROMOSOME}
@@ -215,7 +215,7 @@ EOF
   #main process
   #make a .dat file for merlin with bi-allelic markers filtered in by vcftools
   echo 'A affection' > "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.dat" \
-    && awk '{print "M",$2}' "${MAP}" >> "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.dat" 
+    && awk '{print "M",$2}' "${MAP}" >> "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.dat"
   if [[ $? -ne 0 ]] \
     || [[ ! -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.dat" ]] \
     || [[ ! -s "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.dat" ]]; then
@@ -234,7 +234,7 @@ or is not a file or is empty." >&2
       exit 1
   fi
 
-  return 0  
+  return 0
 }
 
 main "$@"

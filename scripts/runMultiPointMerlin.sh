@@ -82,7 +82,7 @@ display_usage() {
   cat - <<EOF
   USAGE :
     ${NAME} [options] -D <in_dom_model> -R <in_rec_model> -m <in_map> -d <in_dat> \
--p <in_ped> -c <string> -o <out_dir> 
+-p <in_ped> -c <string> -o <out_dir>
       -D <inFile>       input merlin dominant model file
       -R <inFile>       input merlin recessive model file
       -m <inFile>       input map file
@@ -93,7 +93,7 @@ display_usage() {
       -s <string>       prefix of output files
       -l <float>        minimal lod-score threshold (default : 2.0)
       -h                print help
-  
+
   DESCRIPTION :
     ${NAME} runs a multipoint merlin analysis from input .map .dat .ped files.
 
@@ -144,72 +144,72 @@ main() {
   ## catch option values
   while getopts :D:R:m:d:p:c:o:s:l: option
   do
-    if [[ -z "${OPTARG}" ]]; then 
-      echo "[ERROR] Empty argument for option -${option}" >&2 
+    if [[ -z "${OPTARG}" ]]; then
+      echo "[ERROR] Empty argument for option -${option}" >&2
       exit 1
     fi
 
     case "${option}" in
       D)
         DOM_MODEL="${OPTARG}";
-        if [[ ! -f "${DOM_MODEL}" ]]; then 
+        if [[ ! -f "${DOM_MODEL}" ]]; then
           echo "[ERROR] Input dominant model '${DOM_MODEL}' does not exist or \
-is not a file (option -D)." >&2 
-          exit 1  
+is not a file (option -D)." >&2
+          exit 1
         fi
         ;; # -D <inFile>
       R)
         REC_MODEL="${OPTARG}";
-        if [[ ! -f "${REC_MODEL}" ]]; then 
+        if [[ ! -f "${REC_MODEL}" ]]; then
           echo "[ERROR] Input recessive model '${REC_MODEL}' does not exist or \
-is not a file (option -R)." >&2 
-          exit 1  
+is not a file (option -R)." >&2
+          exit 1
         fi
         ;; # -R <inFile>
       m)
         MAP="${OPTARG}"
-        if [[ ! -f "${MAP}" ]]; then 
+        if [[ ! -f "${MAP}" ]]; then
           echo "[ERROR] Input MAP file '${MAP}' does not exist or is not a file \
-(option -m)." >&2 
-          exit 1  
+(option -m)." >&2
+          exit 1
         fi
         ;; # -m <inFile>
       d)
         DAT="${OPTARG}"
-        if [[ ! -f "${DAT}" ]]; then 
+        if [[ ! -f "${DAT}" ]]; then
           echo "[ERROR] Input DAT file '${DAT}' does not exist or is not a file \
-(option -d)." >&2 
-          exit 1  
+(option -d)." >&2
+          exit 1
         fi
         ;; # -d <inFile>
       p)
         PED="${OPTARG}"
-        if [[ ! -f "${PED}" ]]; then 
+        if [[ ! -f "${PED}" ]]; then
           echo "[ERROR] Input PED file '${PED}' does not exist or is not a file \
-(option -p)." >&2 
-          exit 1  
+(option -p)." >&2
+          exit 1
         fi
         ;; # -p <inFile>
       c)
         CHROMOSOME="${OPTARG}"
         if [[ "${CHROMOSOME}" =~ ^[0-9]+$ ]]; then
-          if [[ "${CHROMOSOME}" -lt 1 ]] || [[ "${CHROMOSOME}" -gt 22 ]]; then 
-            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2 
-            exit 1  
+          if [[ "${CHROMOSOME}" -lt 1 ]] || [[ "${CHROMOSOME}" -gt 22 ]]; then
+            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2
+            exit 1
           fi
         else
-          if [[ "${CHROMOSOME}" != "X" ]] && [[ "${CHROMOSOME}" != "Y" ]]; then 
-            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2 
-            exit 1  
+          if [[ "${CHROMOSOME}" != "X" ]] && [[ "${CHROMOSOME}" != "Y" ]]; then
+            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2
+            exit 1
           fi
         fi
         ;; # -c <string>
       o)
         OUTDIR="${OPTARG}"
-        if [[ ! -d "${OUTDIR}" ]]; then 
+        if [[ ! -d "${OUTDIR}" ]]; then
           echo "[ERROR] Output directory '${OUTDIR}' does not exist (option -o). \
-Please create it." >&2 
-          exit 1  
+Please create it." >&2
+          exit 1
         fi
         ;; # -o <inDirectory>
       s)
@@ -218,14 +218,14 @@ Please create it." >&2
       l)
         MINLODTH="${OPTARG}"
         if ! [[ "${MINLODTH}" =~ ^[0-9]+\.?[0-9]*$ ]] || \
-          [[ "$(echo "${MINLODTH}<=0" | bc -l)" -eq 1 ]]; then 
+          [[ "$(echo "${MINLODTH}<=0" | bc -l)" -eq 1 ]]; then
           echo '[ERROR] The lod-score threshold must be greater than 0 (option \
--l).' >&2 
-          exit 1  
+-l).' >&2
+          exit 1
         fi
         ;; # -l <float>
       :)
-        echo "[ERROR] option ${OPTARG} : missing argument" >&2 
+        echo "[ERROR] option ${OPTARG} : missing argument" >&2
         exit 1
         ;;
       \?)
@@ -239,29 +239,29 @@ Please create it." >&2
 
 
   ### checking input directories and files
-  if [[ "${DOM_MODEL}" = 'N.O.F.I.L.E' ]]; then 
+  if [[ "${DOM_MODEL}" = 'N.O.F.I.L.E' ]]; then
     echo '[ERROR] Input dominant model was not supplied (mandatory option -d)' >&2
-    exit 1  
+    exit 1
   fi
-  if [[ "${REC_MODEL}" = 'N.O.F.I.L.E' ]]; then 
+  if [[ "${REC_MODEL}" = 'N.O.F.I.L.E' ]]; then
     echo '[ERROR] Input recessive model was not supplied (mandatory option -r)' >&2
-    exit 1  
+    exit 1
   fi
-  if [[ "${MAP}" = 'N.O.F.I.L.E' ]]; then 
+  if [[ "${MAP}" = 'N.O.F.I.L.E' ]]; then
     echo '[ERROR] Input MAP file was not supplied (mandatory option -m)' >&2
-    exit 1  
+    exit 1
   fi
-  if [[ "${DAT}" = 'N.O.F.I.L.E' ]]; then 
+  if [[ "${DAT}" = 'N.O.F.I.L.E' ]]; then
     echo '[ERROR] Input DAT file was not supplied (mandatory option -d)' >&2
-    exit 1  
+    exit 1
   fi
-  if [[ "${PED}" = 'N.O.F.I.L.E' ]]; then 
-    echo '[ERROR] Input PED file was not supplied (mandatory option -p)' >&2 
-    exit 1  
+  if [[ "${PED}" = 'N.O.F.I.L.E' ]]; then
+    echo '[ERROR] Input PED file was not supplied (mandatory option -p)' >&2
+    exit 1
   fi
-  if [[ "${OUTDIR}" = 'N.O.D.I.R' ]]; then 
-    echo '[ERROR] Output directory was not supplied (mandatory option -o)' >&2 
-    exit 1  
+  if [[ "${OUTDIR}" = 'N.O.D.I.R' ]]; then
+    echo '[ERROR] Output directory was not supplied (mandatory option -o)' >&2
+    exit 1
   fi
   if [[ "${CHROMOSOME}" = 'N.O.C.H.R.O.M' ]]; then
     echo '[ERROR] Chromosome was not supplied (mandatory option -c)' >&2
@@ -269,21 +269,21 @@ Please create it." >&2
   fi
 
   ### define default output file prefix
-  if [[ "${OUTPREFIX}" = 'N.O.S.T.R.I.N.G' ]]; then 
-    OUTPREFIX="results_multi_chr" 
+  if [[ "${OUTPREFIX}" = 'N.O.S.T.R.I.N.G' ]]; then
+    OUTPREFIX="results_multi_chr"
   fi
   readonly OUTPREFIX
 
 
   ### print used parameters
   cat - <<EOF
-    ${NAME} 
+    ${NAME}
     Parameters as interpreted:
       -D ${DOM_MODEL}
-      -R ${REC_MODEL} 
-      -m ${MAP} 
-      -d ${DAT} 
-      -p ${PED} 
+      -R ${REC_MODEL}
+      -m ${MAP}
+      -d ${DAT}
+      -p ${PED}
       -c ${CHROMOSOME}
       -o ${OUTDIR}
       -s ${OUTPREFIX}
@@ -301,7 +301,7 @@ EOF
 
   #create empty files if chromosome 'Y'
   if [[ "${CHROMOSOME}" == "Y" ]]; then
-    touch ${OUTDOM} 
+    touch ${OUTDOM}
     touch ${OUTREC}
     touch ${OUTDIR}/${OUTPREFIX}${CHROMOSOME}_dominant.woheader.txt
     touch ${OUTDIR}/${OUTPREFIX}${CHROMOSOME}_recessive.woheader.txt
@@ -318,24 +318,24 @@ EOF
     if [[ -s "${DAT}" ]] && [[ -s "${PED}" ]] && [[ -s "${MAP}" ]]; then
       echo "RUN MULTIPOINT MERLIN ANALYSIS - CHROMOSOME ${CHROMOSOME}"
       merlin --quiet -d "${DAT}" -p "${PED}" -m "${MAP}" --model "${DOM_MODEL}" > "${OUTDOM}" \
-        || { 
+        || {
           sed -n '/^FATAL ERROR/,$p' "${OUTDOM}" > "${OUTDOM}.err"
           echo "[ERROR] Merlin multipoint analysis of the chromosome \
 ${CHROMOSOME} with a dominant model ends with error. See details into file \
-${OUTDOM}.err" >&2 
-          END_WITH_ERRORS=1 
+${OUTDOM}.err" >&2
+          END_WITH_ERRORS=1
       }
       merlin --quiet -d "${DAT}" -p "${PED}" -m "${MAP}" --model "${REC_MODEL}" > "${OUTREC}" \
-        || { 
+        || {
           sed -n '/^FATAL ERROR/,$p' "${OUTREC}" > "${OUTREC}.err"
           echo "[ERROR] Merlin multipoint analysis of the chromosome \
 ${CHROMOSOME} using a recessive model ends with error. See details into file \
-${OUTREC}.err" >&2 
-          END_WITH_ERRORS=1 
+${OUTREC}.err" >&2
+          END_WITH_ERRORS=1
       }
     else
       echo "[INFO] Ignoring merlin multipoint analysis of the chromosome \
-${CHROMOSOME}." 
+${CHROMOSOME}."
     fi
 
 
@@ -374,8 +374,8 @@ chromosome ${CHROMOSOME}."
 chromosome ${CHROMOSOME}." >&2
 
                 # get significant LOD scores
-                awk -v th="${MINLODTH}" '{ 
-                  if($2>=th){print $0} 
+                awk -v th="${MINLODTH}" '{
+                  if($2>=th){print $0}
                 }' "${prefix}.woheader.txt" \
                   > "${prefix}_LODsignif.txt" \
                   || echo '[ERROR] Program failed to retrieve significant lod scores.' >&2
@@ -397,7 +397,7 @@ chromosome ${CHROMOSOME}." >&2
     done
 
 
-  ##if chromosome is 'Y', create empty files 
+  ##if chromosome is 'Y', create empty files
   elif [[ "${CHROMOSOME}" == "Y" ]]; then
     echo "[INFO] Ignoring merlin multipoint analysis of the chromosome ${CHROMOSOME}."
     touch "${OUTDOM}"
@@ -405,7 +405,7 @@ chromosome ${CHROMOSOME}." >&2
     touch "${OUTDOMSIGNIF}"
     touch "${OUTRECSIGNIF}"
   fi
- 
+
 
   #check output files
   if [[ "${CHROMOSOME}" != "Y" ]]; then
@@ -416,21 +416,21 @@ chromosome ${CHROMOSOME}." >&2
       echo "[ERROR] File '${OUTREC}' was not output or is empty." >&2
     fi
     if [[ ! -f "${OUTDOMSIGNIF}" ]] || [[ ! -s "${OUTDOMSIGNIF}" ]]; then
-      echo "[WARNING] File '${OUTDOMSIGNIF}' was not output or is empty." 
+      echo "[WARNING] File '${OUTDOMSIGNIF}' was not output or is empty."
     fi
     if [[ ! -f "${OUTRECSIGNIF}" ]] || [[ ! -s "${OUTRECSIGNIF}" ]]; then
-      echo "[WARNING] File '${OUTRECSIGNIF}' was not output or is empty." 
+      echo "[WARNING] File '${OUTRECSIGNIF}' was not output or is empty."
     fi
   fi
 
-  if [[ "${END_WITH_ERRORS}" -eq 0 ]]; then 
-    echo 'DONE' 
-  else 
+  if [[ "${END_WITH_ERRORS}" -eq 0 ]]; then
+    echo 'DONE'
+  else
     echo "[ERROR] chromosome ${CHROMOSOME} - some merlin multipoint analyses \
-failed" >&2 
+failed" >&2
   fi
- 
-  return 0 
+
+  return 0
 }
 
 main "$@"

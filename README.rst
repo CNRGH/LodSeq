@@ -5,21 +5,21 @@ LodSeq performs the genetic linkage analysis across families, by computing lod-s
 
 Both singlepoint and multipoint parametric linkage analyses are computed using `merlin <http://csg.sph.umich.edu/abecasis/merlin/>`_ (*Abecasis et al. Nature Genetics 2002*).
 
-| 
+|
 
 PREREQUISITES
 =============
 
 - `Python <https://www.python.org/>`_ >= 3.5
-- `Conda <https://conda.io/>`_ >= 4.3 
+- `Conda <https://conda.io/>`_ >= 4.3
 - `Snakemake <https://snakemake.readthedocs.io/en/stable/>`_ >= 3.9.0
 
-| 
+|
 
 INSTALLATION
 ============
 
-Download genetic maps from the HapMap project: 
+Download genetic maps from the HapMap project:
 
 .. code-block:: bash
 
@@ -29,7 +29,7 @@ Download genetic maps from the HapMap project:
        && tar -zxf genetic_map_HapMapII_GRCh37.tar.gz -C genetic_map_HapMapII_GRCh37
      $ cd ../..
 
-| 
+|
 
 Once the prerequisites have been installed, configure the environment.
 vcftools, plink and merlin will be installed by conda:
@@ -38,7 +38,7 @@ vcftools, plink and merlin will be installed by conda:
 
      $ conda env create -n lodseq --file environment.yaml
 
-| 
+|
 
 Then, check that the external programs have been properly installed:
 
@@ -50,7 +50,7 @@ Then, check that the external programs have been properly installed:
      $ which merlin && merlin
      $ source deactivate lodseq
 
-| 
+|
 
 QUICK START
 ===========
@@ -61,8 +61,9 @@ https://github.com/jmchilton/SnpEffect/tree/master/papers/Protocol/data/chr7.vcf
 
 - The pedigree was reduced to 6 individus.
 - Some genotypes were modified replacing phased genotypes by unphased genotypes.
+- Some records were removed to reduce the final file size.
 
-| 
+|
 
 Activate the environment
 
@@ -70,7 +71,7 @@ Activate the environment
 
      $ source activate lodseq
 
-| 
+|
 
 Run the workflow (using 2 threads)
 
@@ -79,7 +80,7 @@ Run the workflow (using 2 threads)
      $ mkdir test/
      $ snakemake -s Snakefile --configfile config.yaml -j 2
 
-| 
+|
 
 Exit
 
@@ -87,7 +88,7 @@ Exit
 
      $ source deactivate lodseq
 
-| 
+|
 
 RESULTS
 -------
@@ -101,12 +102,12 @@ Please compare your results to the expected output files:
 
      $ cd data/outputs/mergeResults/
      $ ls -1
-         results_multipoint_merged_dominant.txt 
-         results_multipoint_merged_recessive.txt 
-         results_singlepoint_merged_dominant.txt 
+         results_multipoint_merged_dominant.txt
+         results_multipoint_merged_recessive.txt
+         results_singlepoint_merged_dominant.txt
          results_singlepoint_merged_recessive.txt
 
-| 
+|
 
 **RESULT EXAMPLE**
 
@@ -123,23 +124,23 @@ Parametric singlepoint analysis using a recessive model:
         7:16692      0.000      0.000      0.000
         7:16712      0.000      0.000      0.000
         7:16717      0.000      0.000      0.000
-        7:16719      1.328      1.000      1.328
+        7:16719      0.000      0.000      0.000
         7:16787      0.000      0.000      0.000
-        7:16798      1.328      1.000      1.328
+        7:16798      0.000      0.000      0.000
         7:16878      0.000      0.000      0.000
         7:17881      0.000      0.000      0.000
         7:18510      0.000      0.000      0.000
-        7:19181     -2.534      0.000      0.000
+        7:19181     -2.575      0.000      0.000
 
 See documentation of `merlin <http://csg.sph.umich.edu/abecasis/merlin/tour/parametric.html>`_ for a complete description.
 
-| 
+|
 
 **WARNINGS**
 
 Loci with bad inheritance or loci with multichar allele variation will have a null lod-score (-0.000 or 0.000).
 
-| 
+|
 
 RUN LODSEQ ON A NEW DATASET
 ===========================
@@ -161,7 +162,7 @@ Description of the fields into ``config.yaml``:
      threads        # number of threads used by multithread steps
      chromosomes    # list of chromosomes to analyze
 
-| 
+|
 
 You can also change the parameters of the recessive and dominant models:
 
@@ -181,33 +182,33 @@ The parameters of these models are respectively:
 See a complete description and examples on `merlin website <http://csg.sph.umich.edu/abecasis/merlin/tour/parametric.html>`_
 and `here <http://csg.sph.umich.edu/abecasis/merlin/reference/parametric.html>`_.
 
-| 
+|
 
 LODSEQ PIPELINE
 ===============
 
 .. image:: dag.png
 
-| 
+|
 
 AUTHORS
 =======
 Edith Le Floch, Centre National de Recherche en Génomique Humaine - CEA, Evry, France, edith.le-floch@cea.fr
 
-Elise Larsonneur, Centre National de Recherche en Génomique Humaine - CEA, Evry, France, elise.larsonneur@cea.fr 
+Elise Larsonneur, Centre National de Recherche en Génomique Humaine - CEA, Evry, France, elise.larsonneur@cea.fr
 
-| 
+|
 
 CONTACT
 =======
 For help please contact the authors.
 
-| 
+|
 
 LICENSING
 =========
-LodSeq is released under the terms of the CeCILL license, 
-a free software license agreement adapted to both international and French legal matters 
+LodSeq is released under the terms of the CeCILL license,
+a free software license agreement adapted to both international and French legal matters
 that is fully compatible with the GNU GPL, GNU Affero GPL and/or EUPL license.
 
 For further details see LICENSE file or check out http://www.cecill.info/.

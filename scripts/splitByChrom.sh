@@ -84,9 +84,9 @@ display_usage() {
       -s <string>       prefix of output files
       -t <int>          number of threads used by plink steps (default : 1)
       -h                print help
-  
+
   DESCRIPTION :
-    ${NAME} outputs .map and .ped files of a specified chromosome from input .map 
+    ${NAME} outputs .map and .ped files of a specified chromosome from input .map
     and .ped files.
 
   EXAMPLE :
@@ -114,7 +114,7 @@ main() {
     display_usage
     exit 0
   fi
-  if [[ -n "$1" ]]; then 
+  if [[ -n "$1" ]]; then
     if [[ "$1" = "-?" ]] || [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
       display_usage
       exit 0
@@ -133,48 +133,48 @@ main() {
   ## catch option values
   while getopts :m:p:c:o:s:t: option
   do
-    if [[ -z "${OPTARG}" ]]; then 
-      echo "[ERROR] Empty argument for option -${option}" >&2 
-      exit 1 
+    if [[ -z "${OPTARG}" ]]; then
+      echo "[ERROR] Empty argument for option -${option}" >&2
+      exit 1
     fi
 
     case "${option}" in
       m)
         MAP="${OPTARG}";
-        if [[ ! -f "${MAP}" ]]; then 
+        if [[ ! -f "${MAP}" ]]; then
           echo "[ERROR] Input MAP file '${MAP}' does not exist or is not a file\
- (option -m)." >&2 
-          exit 1  
+ (option -m)." >&2
+          exit 1
         fi
         ;; # -m <inFile>
       p)
         PED="${OPTARG}";
-        if [[ ! -f "${PED}" ]]; then 
+        if [[ ! -f "${PED}" ]]; then
           echo "[ERROR] Input PED file '${PED}' does not exist or is not a file\
- (option -p)." >&2 
-          exit 1 
+ (option -p)." >&2
+          exit 1
         fi
         ;; # -p <inFile>
       c)
         CHROMOSOME="${OPTARG}";
         if [[ "${CHROMOSOME}" =~ ^[0-9]+$ ]]; then
-          if [[ "${CHROMOSOME}" -lt 1 ]] || [[ "${CHROMOSOME}" -gt 22 ]]; then 
-            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2 
-            exit 1 
+          if [[ "${CHROMOSOME}" -lt 1 ]] || [[ "${CHROMOSOME}" -gt 22 ]]; then
+            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2
+            exit 1
           fi
         else
-          if [[ "${CHROMOSOME}" != "X" ]] && [[ "${CHROMOSOME}" != "Y" ]]; then 
+          if [[ "${CHROMOSOME}" != "X" ]] && [[ "${CHROMOSOME}" != "Y" ]]; then
             echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2
-            exit 1 
+            exit 1
           fi
         fi
         ;; # -c <string>
       o)
         OUTDIR="${OPTARG}"
-        if [[ ! -d "${OUTDIR}" ]]; then 
+        if [[ ! -d "${OUTDIR}" ]]; then
           echo "[ERROR] Output directory '${OUTDIR}' does not exist (option -o).\
  Please create it." >&2
-          exit 1 
+          exit 1
         fi
         ;; # -o <inDirectory>
       s)
@@ -183,14 +183,14 @@ main() {
       t)
         THREADS="${OPTARG}"
         nb_proc="$(getconf _NPROCESSORS_ONLN)"  #unix and osx
-        if ! [[ "${THREADS}" =~ ^[0-9]+$ ]] || [[ "${THREADS}" -lt 1 ]]; then 
-          echo '[ERROR] the number of threads must be greater than 0 (option -t).' >&2 
-          exit 1 
+        if ! [[ "${THREADS}" =~ ^[0-9]+$ ]] || [[ "${THREADS}" -lt 1 ]]; then
+          echo '[ERROR] the number of threads must be greater than 0 (option -t).' >&2
+          exit 1
         fi
-        if [[ "${THREADS}" -gt "${nb_proc}" ]]; then 
+        if [[ "${THREADS}" -gt "${nb_proc}" ]]; then
           echo "[ERROR] too much threads requested, use ${nb_proc} thread(s) \
 instead" >&2
-          exit 1 
+          exit 1
         fi
         ;; # -t <number of threads>
       :)
@@ -207,39 +207,39 @@ instead" >&2
   readonly MAP PED OUTDIR CHROMOSOME THREADS
 
   ### check mandatory parameters
-  if [[ "${MAP}" = 'N.O.F.I.L.E' ]]; then 
+  if [[ "${MAP}" = 'N.O.F.I.L.E' ]]; then
     echo '[ERROR] Input MAP file was not supplied (mandatory option -m)' >&2
-    exit 1 
+    exit 1
   fi
-  if [[ "${PED}" = 'N.O.F.I.L.E' ]]; then 
-    echo '[ERROR] Input PED file was not supplied (mandatory option -p)' >&2 
-    exit 1 
+  if [[ "${PED}" = 'N.O.F.I.L.E' ]]; then
+    echo '[ERROR] Input PED file was not supplied (mandatory option -p)' >&2
+    exit 1
   fi
-  if [[ "${OUTDIR}" = 'N.O.D.I.R' ]]; then 
-    echo '[ERROR] Output directory was not supplied (mandatory option -o)' >&2 
-    exit 1 
+  if [[ "${OUTDIR}" = 'N.O.D.I.R' ]]; then
+    echo '[ERROR] Output directory was not supplied (mandatory option -o)' >&2
+    exit 1
   fi
   if [[ "${CHROMOSOME}" = 'N.O.C.H.R.O.M' ]]; then
-    echo '[ERROR] Chromosome was not supplied (mandatory option -c)' >&2 
-    exit 1 
+    echo '[ERROR] Chromosome was not supplied (mandatory option -c)' >&2
+    exit 1
   fi
 
   ### define default output file prefix
-  if [[ "${OUTPREFIX}" = 'N.O.S.T.R.I.N.G' ]]; then 
-    OUTPREFIX="$(basename "${MAP}" '.map')_chr" 
+  if [[ "${OUTPREFIX}" = 'N.O.S.T.R.I.N.G' ]]; then
+    OUTPREFIX="$(basename "${MAP}" '.map')_chr"
   fi
   readonly OUTPREFIX
 
 
   ### print used parameters
   cat - <<EOF
-    ${NAME} 
+    ${NAME}
     Parameters as interpreted:
-      -m ${MAP} 
-      -p ${PED} 
-      -c ${CHROMOSOME} 
-      -o ${OUTDIR} 
-      -s ${OUTPREFIX} 
+      -m ${MAP}
+      -p ${PED}
+      -c ${CHROMOSOME}
+      -o ${OUTDIR}
+      -s ${OUTPREFIX}
       -t ${THREADS}
 
 EOF
@@ -248,8 +248,8 @@ EOF
   #main process
   cp -p "${MAP}" "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" || exit $?
   cp -p "${PED}" "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped" || exit $?
- 
-  plink_tmp_log="$(mktemp "${OUTDIR}/plink.XXX.log")" 
+
+  plink_tmp_log="$(mktemp "${OUTDIR}/plink.XXX.log")"
   plink \
     --file "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK" \
     --chr "${CHROMOSOME}" \
@@ -270,24 +270,24 @@ EOF
 '${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.ped'. \
 See log files for more details." >&2
       #remove temp files
-      if [[ -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" ]]; then 
-        rm "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" 
+      if [[ -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" ]]; then
+        rm "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map"
       fi
-      if [[ -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped" ]]; then 
+      if [[ -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped" ]]; then
         rm "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped"
       fi
       exit $rc
   fi
 
   #remove temp files
-  if [[ -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" ]]; then 
-    rm "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" 
+  if [[ -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" ]]; then
+    rm "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map"
   fi
-  if [[ -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped" ]]; then 
+  if [[ -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped" ]]; then
     rm "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped"
   fi
 
   return 0
 }
 
-main "$@" 
+main "$@"

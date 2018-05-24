@@ -68,7 +68,7 @@ MERLIN_VERSION = ''
 try:
    subprocess.check_output(["merlin"])
 except subprocess.CalledProcessError as e:
-   MERLIN_OUTPUT = e.output.decode('utf-8') 
+   MERLIN_OUTPUT = e.output.decode('utf-8')
    MERLIN_VERSION = re.search(r'MERLIN ([0-9]\.[0-9]\.[0-9]{1,2})', MERLIN_OUTPUT).group(1)
 
 
@@ -120,13 +120,13 @@ localrules: all
 
 #onsuccess/onerror messages
 ##=========================
-#Both handlers expect arbitrary python code (similar to the run keyword) and will be executed at the end of the workflow. 
+#Both handlers expect arbitrary python code (similar to the run keyword) and will be executed at the end of the workflow.
 #As the names suggest, the first is executed if everything worked nicely, the second in case an error occurred.
 #Handlers must be specified above rule definition
 onstart:
     print("LodSeq version 1.0.0")
 onsuccess:
-    print("LodSeq finished with success.") 
+    print("LodSeq finished with success.")
 onerror:
     print("LodSeq failed.")
     #shell("echo 'See log file '{log}") #this log tmp file is removed...
@@ -140,7 +140,7 @@ rule all:
     input:
           [ OUTMERGEDOMSGL, OUTMERGERECSGL, OUTMERGEDOMMULTI, OUTMERGERECMULTI ]
 
-      
+
 #rules
 #=====
 
@@ -148,7 +148,7 @@ rule all:
 rule prepareGeneticMaps:
     input:
         genetic_maps = config["genetic_maps"],
-        out_dir = config["out_dir"] 
+        out_dir = config["out_dir"]
     params:
         chromosomes = "{chromosomes}",
         out_log = config["out_log"]
@@ -169,7 +169,7 @@ rule prepareGeneticMaps:
           {workflow.basedir}/scripts/prepareGeneticMaps.sh \
             -g {input.genetic_maps} \
             -o {input.out_dir}/prepareGeneticMaps/{params.chromosomes}/ \
-            -c {params.chromosomes}  
+            -c {params.chromosomes}
         elif [[ "{params.chromosomes}" == "Y" ]]; then
           touch {output.out_gen_map}
         fi
@@ -177,7 +177,7 @@ rule prepareGeneticMaps:
         """
 
 
-#get .ped and .map files from .vcf and .tfam files 
+#get .ped and .map files from .vcf and .tfam files
 #   and check that all input files and directories exist
 rule prepareVCF:
     input:
@@ -186,7 +186,7 @@ rule prepareVCF:
         dom_model = config["dom_model"],
         rec_model = config["rec_model"],
         genetic_maps = config["genetic_maps"],
-        out_dir = config["out_dir"] 
+        out_dir = config["out_dir"]
     params:
         lod_threshold = config["lod_threshold"],
         out_prefix = config["out_prefix"],
@@ -206,8 +206,8 @@ rule prepareVCF:
         PLINK_VERSION
     shell:
         """
-        ( 
-        if [[ ! -d $(dirname {params.out_log}) ]]; then echo -e 'Directory of log file does not exist; Program exit' 1>&2; exit 1; fi; 
+        (
+        if [[ ! -d $(dirname {params.out_log}) ]]; then echo -e 'Directory of log file does not exist; Program exit' 1>&2; exit 1; fi;
         echo '' 1> {params.out_log};
         if [[ ! -d {input.genetic_maps} ]]; then echo -e "Directory {input.genetic_maps} does not exist. Program exit" 1>&2; exit 1; fi;
         if [[ ! -d {input.out_dir} ]]; then echo -e "Directory {input.out_dir} does not exist. Program exit" 1>&2; exit 1; fi;
@@ -238,7 +238,7 @@ rule splitByChrom:
         out_prefix = config["out_prefix"],
         out_log = config["out_log"],
         threads = getOptionalParam(config, "threads", '1')
-    threads: 
+    threads:
         2
     output:
         out_chr_map=config["out_dir"] + '/splitByChrom/' + "{chromosomes}" + '/' + config["out_prefix"] + '_vcftools_filled_chr' + "{chromosomes}" + '.map',
@@ -257,7 +257,7 @@ rule splitByChrom:
           -c {params.chromosomes} \
           -o {input.out_dir}/splitByChrom/{params.chromosomes}/ \
           -s {params.out_prefix}_vcftools_filled_chr \
-          -t {params.threads}; 
+          -t {params.threads};
         ';
         ) 1> {log.out} 2> {log.err} && echo $? > {log.rc} || echo $? > {log.rc} ; exit $(cat {log.rc});
         """
@@ -282,12 +282,12 @@ rule prepareSinglePointFiles:
     shell:
         """
         (
-        #outputs .dat and .map files 
+        #outputs .dat and .map files
         {workflow.basedir}/scripts/prepareSinglePointFiles.sh \
           -m {input.in_chr_map} \
           -c {params.chromosomes} \
           -o {input.out_dir}/prepareSinglePointFiles/{params.chromosomes}/ \
-          -s {params.out_prefix}_sgl_chr        
+          -s {params.out_prefix}_sgl_chr
         #copy the ped file ouputted by splitByChrom
         ) 1> {log.out} 2> {log.err} && echo $? > {log.rc} || echo $? > {log.rc} ; exit $(cat {log.rc});
         """
@@ -323,7 +323,7 @@ rule runSinglePointMerlin:
         MERLIN_VERSION
     shell:
         """
-        ( 
+        (
         {workflow.basedir}/scripts/runSinglePointMerlin.sh \
           -D {input.dom_model} \
           -R {input.rec_model} \
@@ -438,7 +438,7 @@ rule mergeResults:
         in_multi_rec_txt = OUTMULTIRECWOHTXT,
         in_sgl_log = OUTSGL,
         in_multi_log = OUTMULTI
-    params: 
+    params:
         out_log = config["out_log"]
     output:
         out_merge_sgl_dom_txt = OUTMERGEDOMSGL,
@@ -452,14 +452,14 @@ rule mergeResults:
     shell:
         """
         (
-        cat {input.in_sgl_dom_txt} 1> {output.out_merge_sgl_dom_txt}   
-        cat {input.in_sgl_rec_txt} 1> {output.out_merge_sgl_rec_txt}   
-        cat {input.in_multi_dom_txt} 1> {output.out_merge_multi_dom_txt}   
-        cat {input.in_multi_rec_txt} 1> {output.out_merge_multi_rec_txt}  
-        echo -e '\nSINGLEPOINT ANALYSIS' >> {params.out_log} 
-        for f in {input.in_sgl_log}; do if grep -q 'max' $f ; then grep 'max' $f >> {params.out_log}; fi; done 
-        echo -e '\nMULTIPOINT ANALYSIS' >> {params.out_log} 
-        for f in {input.in_multi_log}; do if grep -q 'max' $f ; then grep 'max' $f >> {params.out_log}; fi; done 
+        cat {input.in_sgl_dom_txt} 1> {output.out_merge_sgl_dom_txt}
+        cat {input.in_sgl_rec_txt} 1> {output.out_merge_sgl_rec_txt}
+        cat {input.in_multi_dom_txt} 1> {output.out_merge_multi_dom_txt}
+        cat {input.in_multi_rec_txt} 1> {output.out_merge_multi_rec_txt}
+        echo -e '\nSINGLEPOINT ANALYSIS' >> {params.out_log}
+        for f in {input.in_sgl_log}; do if grep -q 'max' $f ; then grep 'max' $f >> {params.out_log}; fi; done
+        echo -e '\nMULTIPOINT ANALYSIS' >> {params.out_log}
+        for f in {input.in_multi_log}; do if grep -q 'max' $f ; then grep 'max' $f >> {params.out_log}; fi; done
         ) 1> {log.out} 2> {log.err} && echo $? > {log.rc} || echo $? > {log.rc} ; exit $(cat {log.rc});
         """
- 
+

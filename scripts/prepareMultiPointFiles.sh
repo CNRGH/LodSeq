@@ -78,7 +78,7 @@ display_usage() {
   cat - <<EOF
   USAGE :
     ${NAME} [options] -m <in_map> -p <in_ped> -c <string> -g <in_genetic_maps_dir> \
--o <out_dir> 
+-o <out_dir>
       -m <inFile>       input map file
       -p <inFile>       input ped pedigree file
       -c <string>       input chromosome
@@ -88,7 +88,7 @@ without header
       -s <string>       prefix of output files
       -t <int>          number of threads used by plink steps (default : 1)
       -h                print help
-  
+
   DESCRIPTION :
     ${NAME} formats .ped .dat and .map files for a multipoint merlin analysis from
     input .map .ped files.
@@ -106,7 +106,7 @@ EOF
 # MAIN FUNCTION                                                                #
 ################################################################################
 # main
-# Formats .ped .dat and .map files for a multipoint merlin analysis from input 
+# Formats .ped .dat and .map files for a multipoint merlin analysis from input
 #   .map .ped files.
 # Parameters : See 'getopts' part.
 main() {
@@ -139,54 +139,54 @@ main() {
   ## catch option values
   while getopts :m:p:g:c:o:s:t: option
   do
-    if [[ -z "${OPTARG}" ]]; then 
-      echo "[ERROR] Empty argument for option -${option}" >&2 
-      exit 1 
+    if [[ -z "${OPTARG}" ]]; then
+      echo "[ERROR] Empty argument for option -${option}" >&2
+      exit 1
     fi
 
     case "${option}" in
       m)
         MAP="${OPTARG}"
-        if [[ ! -f "${MAP}" ]]; then 
-          echo "[ERROR] Input MAP file '${MAP}' does not exist (option -m)." >&2 
-          exit 1  
+        if [[ ! -f "${MAP}" ]]; then
+          echo "[ERROR] Input MAP file '${MAP}' does not exist (option -m)." >&2
+          exit 1
         fi
         ;; # -m <inFile>
       p)
         PED="${OPTARG}"
-        if [[ ! -f "${PED}" ]]; then 
-          echo "[ERROR] Input PED '${PED}' does not exist (option -p)." >&2 
-          exit 1  
+        if [[ ! -f "${PED}" ]]; then
+          echo "[ERROR] Input PED '${PED}' does not exist (option -p)." >&2
+          exit 1
         fi
         ;; # -p <inFile>
       g)
         GENMAPS="${OPTARG}"
-        if [[ ! -d "${GENMAPS}" ]]; then 
+        if [[ ! -d "${GENMAPS}" ]]; then
           echo "[ERROR] Input directory of genetic maps '${GENMAPS}' does not \
-exist (option -g)." >&2 
-          exit 1  
+exist (option -g)." >&2
+          exit 1
         fi
         ;; # -g <inDirectory>
       c)
         CHROMOSOME="${OPTARG}"
         if [[ "${CHROMOSOME}" =~ ^[0-9]+$ ]]; then
-          if [[ "${CHROMOSOME}" -lt 1 ]] || [[ "${CHROMOSOME}" -gt 22 ]]; then 
-            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2 
-            exit 1  
+          if [[ "${CHROMOSOME}" -lt 1 ]] || [[ "${CHROMOSOME}" -gt 22 ]]; then
+            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2
+            exit 1
           fi
         else
-          if [[ "${CHROMOSOME}" != "X" ]] && [[ "${CHROMOSOME}" != "Y" ]]; then 
-            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2 
-            exit 1  
+          if [[ "${CHROMOSOME}" != "X" ]] && [[ "${CHROMOSOME}" != "Y" ]]; then
+            echo "[ERROR] invalid chromosome '${CHROMOSOME}' (option -c)." >&2
+            exit 1
           fi
         fi
         ;; # -c <string>
       o)
         OUTDIR="${OPTARG}"
-        if [[ ! -d "${OUTDIR}" ]]; then 
+        if [[ ! -d "${OUTDIR}" ]]; then
           echo "[ERROR] Output directory '${OUTDIR}' does not exist (option -o).\
- Please create it." >&2 
-          exit 1  
+ Please create it." >&2
+          exit 1
         fi
         ;; # -o <inDirectory>
       s)
@@ -195,14 +195,14 @@ exist (option -g)." >&2
       t)
         THREADS="${OPTARG}"
         nb_proc="$(getconf _NPROCESSORS_ONLN)"  #unix and osx
-        if ! [[ "${THREADS}" =~ ^[0-9]+$ ]] || [[ "${THREADS}" -lt 1 ]]; then 
-          echo '[ERROR] the number of threads must be greater than 0 (option -t).' >&2  
-          exit 1  
+        if ! [[ "${THREADS}" =~ ^[0-9]+$ ]] || [[ "${THREADS}" -lt 1 ]]; then
+          echo '[ERROR] the number of threads must be greater than 0 (option -t).' >&2
+          exit 1
         fi
-        if [[ "${THREADS}" -gt "${nb_proc}" ]]; then 
+        if [[ "${THREADS}" -gt "${nb_proc}" ]]; then
           echo "[ERROR] too much threads requested, use ${nb_proc} thread(s) \
 instead" >&2
-          exit 1 
+          exit 1
         fi
         ;; # -t <number of threads>
       :)
@@ -220,22 +220,22 @@ instead" >&2
 
 
   ### checking input directories and files
-  if [[ "${MAP}" = 'N.O.F.I.L.E' ]]; then 
-    echo '[ERROR] Input MAP file was not supplied (mandatory option -m)' >&2 
-    exit 1  
+  if [[ "${MAP}" = 'N.O.F.I.L.E' ]]; then
+    echo '[ERROR] Input MAP file was not supplied (mandatory option -m)' >&2
+    exit 1
   fi
-  if [[ "${PED}" = 'N.O.F.I.L.E' ]]; then 
-    echo '[ERROR] Input PED file was not supplied (mandatory option -p)' >&2 
-    exit 1  
+  if [[ "${PED}" = 'N.O.F.I.L.E' ]]; then
+    echo '[ERROR] Input PED file was not supplied (mandatory option -p)' >&2
+    exit 1
   fi
-  if [[ "${GENMAPS}" = 'N.O.D.I.R' ]]; then 
+  if [[ "${GENMAPS}" = 'N.O.D.I.R' ]]; then
     echo '[ERROR] Directory of genetic maps was not supplied (mandatory option \
--g)' >&2 
-    exit 1  
+-g)' >&2
+    exit 1
   fi
-  if [[ "${OUTDIR}" = 'N.O.D.I.R' ]]; then 
-    echo '[ERROR] Output directory was not supplied (mandatory option -o)' >&2 
-    exit 1  
+  if [[ "${OUTDIR}" = 'N.O.D.I.R' ]]; then
+    echo '[ERROR] Output directory was not supplied (mandatory option -o)' >&2
+    exit 1
   fi
   if [[ "${CHROMOSOME}" = 'N.O.C.H.R.O.M' ]]; then
     echo '[ERROR] Chromosome was not supplied (mandatory option -c)' >&2
@@ -243,7 +243,7 @@ instead" >&2
   fi
 
   ### define default output file prefix
-  if [[ "${OUTPREFIX}" = 'N.O.S.T.R.I.N.G' ]]; then 
+  if [[ "${OUTPREFIX}" = 'N.O.S.T.R.I.N.G' ]]; then
     OUTPREFIX="$(basename "${MAP}" '.map')_multi"
   fi
   readonly OUTPREFIX
@@ -251,14 +251,14 @@ instead" >&2
 
   ### print used parameters
   cat - <<EOF
-    ${NAME} 
+    ${NAME}
     Parameters as interpreted:
-      -m ${MAP} 
-      -p ${PED} 
-      -c ${CHROMOSOME} 
-      -g ${GENMAPS} 
-      -o ${OUTDIR} 
-      -s ${OUTPREFIX} 
+      -m ${MAP}
+      -p ${PED}
+      -c ${CHROMOSOME}
+      -g ${GENMAPS}
+      -o ${OUTDIR}
+      -s ${OUTPREFIX}
       -t ${THREADS}
 
 EOF
@@ -267,10 +267,10 @@ EOF
   #main process
   ##add genetic distances to map file
   echo 'PREPARE INPUT FILES OF MULTIPOINT MERLIN ANALYSIS'
- 
+
   #because there is no genetic map for the Y chromosome
-  if [[ "${CHROMOSOME}" != "Y" ]]; then 
-    cp -p "${MAP}" "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" || exit $? 
+  if [[ "${CHROMOSOME}" != "Y" ]]; then
+    cp -p "${MAP}" "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" || exit $?
     cp -p "${PED}" "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped" || exit $?
 
     #first join to get the list of SNPs in common
@@ -279,7 +279,7 @@ EOF
       | sort -k 4 > "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.SORT.map" \
       || {
         echo '[ERROR] Sorting failed' >&2
-        exit 1 
+        exit 1
     }
     ## get numerically sorted list of SNPs - sort by position (bp)
     join -1 4 -2 1 "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.SORT.map" "${GENMAPS}/genetic_map_GRCh37_chr${CHROMOSOME}_wo_head.txt" \
@@ -289,30 +289,30 @@ EOF
       || {
         echo "[ERROR] An error occurred when generating the list of SNPs in common \
 '${OUTDIR}/list_snp_chr${CHROMOSOME}_with_gendist.txt', \
-file does not exist or is empty." >&2 
+file does not exist or is empty." >&2
         exit 1
     }
     rm "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.SORT.map"
 
     #check files exist
     if [[ ! -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped" ]] \
-      || [[ ! -s "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped" ]]; then 
+      || [[ ! -s "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped" ]]; then
         echo "[ERROR] File '${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped' does not \
-exist or is empty." >&2 
-        exit 1 
+exist or is empty." >&2
+        exit 1
     fi
     if [[ ! -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" ]] \
-      || [[ ! -s "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" ]]; then 
+      || [[ ! -s "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" ]]; then
         echo "[ERROR] File '${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map' does not \
-exist or is empty." >&2 
-        exit 1 
+exist or is empty." >&2
+        exit 1
     fi
     if [[ ! -f "${OUTDIR}/list_snp_chr${CHROMOSOME}_with_gendist.txt" ]] \
-      || [[ ! -s "${OUTDIR}/list_snp_chr${CHROMOSOME}_with_gendist.txt" ]]; then 
+      || [[ ! -s "${OUTDIR}/list_snp_chr${CHROMOSOME}_with_gendist.txt" ]]; then
         echo "[ERROR] An error occurred when generating the list of SNPs in common \
 '${OUTDIR}/list_snp_chr${CHROMOSOME}_with_gendist.txt', \
-file does not exist or is empty." >&2 
-        exit 1 
+file does not exist or is empty." >&2
+        exit 1
     fi
 
     #select only these SNPs in common in ped/map files
@@ -323,7 +323,7 @@ file does not exist or is empty." >&2
       --recode \
       --out "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.OUTPLINK" \
       --threads "${THREADS}" \
-      &> "${plink_tmp_log}" 
+      &> "${plink_tmp_log}"
     rc=$?
     cat "${plink_tmp_log}" | tee >(sed -n '/^Error/,$p' >&2) | grep -v '^Error'
     if [[ -f "${plink_tmp_log}" ]]; then rm "${plink_tmp_log}"; fi
@@ -337,13 +337,13 @@ file does not exist or is empty." >&2
 '${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.OUTPLINK.map'. \
 See log files for more details." >&2
         exit $rc
-    fi 
-      
-      
+    fi
+
+
     #second join to add the genetic distances to the .map files
     ##sort lexically not numerically, before join command
-    awk '{ 
-      $4=sprintf("%015d", $4); 
+    awk '{
+      $4=sprintf("%015d", $4);
       print $0
     }' "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.OUTPLINK.map" \
       | sort -k 4 \
@@ -360,11 +360,11 @@ See log files for more details." >&2
       > "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.JOIN.map" \
       || {
         echo "[ERROR] An error occurred when generating the map file \
-'${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.JOIN.map'" >&2 
+'${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.JOIN.map'" >&2
         exit 1
     }
 
-    # remove tmp files 
+    # remove tmp files
     rm "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.TMPSORT.map"
     rm "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.OUTPLINK.map"
     rm "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.ped"
@@ -376,7 +376,7 @@ See log files for more details." >&2
       >> "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.dat" \
       || {
         echo "[ERROR] An error occurred when generating the dat file \
-${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.dat'" >&2 
+${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.dat'" >&2
         exit 1
     }
 
@@ -384,8 +384,8 @@ ${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.dat'" >&2
     mv "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.OUTPLINK.ped" "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.ped" || exit $?
 
     #rename plink log file
-    if [[ -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.OUTPLINK.log" ]]; then 
-      mv "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.OUTPLINK.log" "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.log" 
+    if [[ -f "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.OUTPLINK.log" ]]; then
+      mv "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.OUTPLINK.log" "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.log"
     fi
 
   elif [[ "${CHROMOSOME}" == "Y" ]]; then
@@ -396,8 +396,8 @@ ${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.dat'" >&2
   fi
 
   #remove temp files
-  if [[ -f "${OUTDIR}/list_snp_chr${CHROMOSOME}_with_gendist.txt" ]]; then 
-    rm "${OUTDIR}/list_snp_chr${CHROMOSOME}_with_gendist.txt" 
+  if [[ -f "${OUTDIR}/list_snp_chr${CHROMOSOME}_with_gendist.txt" ]]; then
+    rm "${OUTDIR}/list_snp_chr${CHROMOSOME}_with_gendist.txt"
   fi
 
   #check output files
@@ -421,8 +421,8 @@ or is empty." >&2
         exit 1
     fi
   fi
- 
-  return 0  
+
+  return 0
 }
 
 main "$@"
