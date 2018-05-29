@@ -1,0 +1,67 @@
+stages:
+    - prepare
+    - build
+    - test
+
+image: centos:7.4.1708
+
+variables:
+    CI_IMAGE: registry.cnrgh.fr/jmercier/LodSeq/ci:1.0.0-0
+    DOCKER_DRIVER: overlay2
+
+
+.build_snakemake: &build_snakemake 
+    stage: build
+    script:
+        - export  LANG=en_US.UTF-8
+        -  yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm https://centos7.iuscommunity.org/ius-release.rpm
+        - yum update -y 
+        - yum install -y curl python36u python36u-devel python36u-setuptools python36u-pip bzip2 gcc bc
+        - curl -LO https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
+        - bash Miniconda2-latest-Linux-x86_64.sh -b -p /usr/local/miniconda
+        - export PATH=/usr/local/miniconda/bin:$PATH
+        - conda update conda
+        - conda install pip
+        - pip3.6 install --upgrade pip
+        - pip3.6 install wrapt requests ratelimiter pyyaml configargparse appdirs datrie jsonschema docutils jinja2
+        - snakemake_version=${CI_JOB_NAME/*-}
+        - curl -Lo snakemake-${snakemake_version}.tar.bz2 https://bitbucket.org/snakemake/snakemake/get/v${snakemake_version}.tar.bz2
+        - mkdir snakemake && tar xf snakemake-${snakemake_version}.tar.bz2 -C snakemake --strip-components=1
+        - pushd snakemake 
+        - python3.6 setup.py install 
+        - popd
+        - conda env create -n lodseq --file environment.yaml
+
+build snakemake-5.1.2: *build_snakemake
+build snakemake-4.8.0: *build_snakemake
+
+.test_genetic_data: &test_genetic_data
+    stage: test
+    script:
+        - export  LANG=en_US.UTF-8
+        - yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm https://centos7.iuscommunity.org/ius-release.rpm
+        - yum update -y 
+        - yum install -y curl python36u python36u-devel python36u-setuptools python36u-pip bzip2 gcc bc
+        - curl -LO https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
+        - bash Miniconda2-latest-Linux-x86_64.sh -b -p /usr/local/miniconda
+        - export PATH=/usr/local/miniconda/bin:$PATH
+        - conda update conda
+        - conda install pip
+        - pip3.6 install --upgrade pip
+        - pip3.6 install wrapt requests ratelimiter pyyaml configargparse appdirs datrie jsonschema docutils jinja2
+        - snakemake_version=${CI_JOB_NAME/*-}
+        - curl -Lo snakemake-${snakemake_version}.tar.bz2 https://bitbucket.org/snakemake/snakemake/get/v${snakemake_version}.tar.bz2
+        - mkdir snakemake && tar xf snakemake-${snakemake_version}.tar.bz2 -C snakemake --strip-components=1
+        - pushd snakemake 
+        - python3.6 setup.py install 
+        - popd
+        - conda env create -n lodseq --file environment.yaml
+        - curl -LO ftp://ftp.ncbi.nlm.nih.gov/hapmap/recombination/2011-01_phaseII_B37/genetic_map_HapMapII_GRCh37.tar.gz
+        - mkdir -p data/inputs/genetic_map_HapMapII_GRCh37 
+        - tar xf genetic_map_HapMapII_GRCh37.tar.gz -C data/inputs/genetic_map_HapMapII_GRCh37
+        - source activate lodseq
+        - mkdir test/
+        - snakemake --ignore-incomplete --reason --verbose --printshellcmds --timestamp  --configfile config.yaml
+
+test genetic data with snakemake-5.1.2: *test_genetic_data
+test genetic data with snakemake-4.8.0: *test_genetic_data
