@@ -62,6 +62,8 @@ build snakemake-4.8.0: *build_snakemake
         - source activate lodseq
         - mkdir test/
         - snakemake --ignore-incomplete --reason --verbose --printshellcmds --timestamp  --configfile config.yaml
+        - tar xf data/outputs/mergeResults.tar.gz -C data/outputs/
+        - for f in $(ls test/mergeResults/results_*); do diff -q test/mergeResults/${f##*/} data/outputs/mergeResults/${f##*/}; done
 
 test genetic data with snakemake-5.1.2: *test_genetic_data
 test genetic data with snakemake-4.8.0: *test_genetic_data
