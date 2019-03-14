@@ -1,9 +1,25 @@
+.. image:: https://gitlab.com/cnrgh/LodSeq/badges/master/pipeline.svg
+    :target: https://gitlab.com/cnrgh/LodSeq
+
+.. image:: https://img.shields.io/badge/license-CeCILL-blue.svg
+    :target: http://www.cecill.info
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.1321178.svg
+    :target: https://doi.org/10.5281/zenodo.1321178
+
 LODSEQ
 ######
 
 LodSeq performs the genetic linkage analysis across families, by computing lod-scores given a gvcf file and a related tfam pedigree file.
 
 Both singlepoint and multipoint parametric linkage analyses are computed using `merlin <http://csg.sph.umich.edu/abecasis/merlin/>`_ (*Abecasis et al. Nature Genetics 2002*).
+
+|
+
+CITATION
+========
+
+Please cite LodSeq using the following DOI: `10.5281/zenodo.1321178 <https://doi.org/10.5281/zenodo.1321178>`_.
 
 |
 
@@ -212,7 +228,4 @@ a free software license agreement adapted to both international and French legal
 that is fully compatible with the GNU GPL, GNU Affero GPL and/or EUPL license.
 
 For further details see LICENSE file or check out http://www.cecill.info/.
-
-.. image:: https://img.shields.io/badge/license-CeCILL-blue.svg
-    :target: http://www.cecill.info/
 
