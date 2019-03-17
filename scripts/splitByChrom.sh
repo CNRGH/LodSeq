@@ -244,6 +244,7 @@ instead" >&2
 
 EOF
 
+  #fg_sar mark -l "splitByChr${CHROMOSOME}" || echo 'ignore fg_sar mark'
 
   #main process
   cp -p "${MAP}" "${OUTDIR}/${OUTPREFIX}${CHROMOSOME}.INPLINK.map" || exit $?

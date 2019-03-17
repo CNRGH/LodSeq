@@ -290,7 +290,8 @@ Please create it." >&2
       -l ${MINLODTH}
 
 EOF
-
+ 
+  #fg_sar mark -l "runMultiPtMerlinChr${CHROMOSOME}" || echo 'ignore fg_sar mark'
 
   #main process
   ### output names

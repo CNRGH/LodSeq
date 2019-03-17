@@ -217,6 +217,7 @@ Please create it." >&2
     -i ${VCF} \n  -p ${TFAM} \n  -o ${OUTDIR} \n  -s ${OUTPREFIX} \n  -t ${THREADS}
 EOF
 
+  #fg_sar mark -l "--------------------------prepareVCF" || echo 'ignore fg_sar mark'
 
   #main process
   ##display available chromosomes

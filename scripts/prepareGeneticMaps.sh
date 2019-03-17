@@ -194,6 +194,7 @@ exist (option -g)." >&2
       -o ${OUTDIR}
 EOF
 
+  #fg_sar mark -l "prepGenMapsChr${CHROMOSOME}" || echo 'ignore fg_sar mark'
 
   #main process
   #because there is no genetic map for the Y chromosome, create empty files

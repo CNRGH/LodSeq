@@ -263,6 +263,7 @@ instead" >&2
 
 EOF
 
+  #fg_sar mark -l "--------------------------prepMultiPtFileChr${CHROMOSOME}" || echo 'ignore fg_sar mark'
 
   #main process
   ##add genetic distances to map file

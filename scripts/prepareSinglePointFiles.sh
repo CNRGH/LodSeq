@@ -211,6 +211,7 @@ main() {
 
 EOF
 
+  #fg_sar mark -l "--------------------------prepSglPtFileChr${CHROMOSOME}" || echo 'ignore fg_sar mark'
 
   #main process
   #make a .dat file for merlin with bi-allelic markers filtered in by vcftools

@@ -292,6 +292,7 @@ Please create it." >&2
 
 EOF
 
+  #fg_sar mark -l "runSglPtMerlinChr${CHROMOSOME}" || echo 'ignore fg_sar mark'
 
   #main process
   ### output names
